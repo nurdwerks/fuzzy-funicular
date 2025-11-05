@@ -20,9 +20,6 @@ async function getApiKey(service) {
  * @param {vscode.ExtensionContext} context
  */
 async function activate(context) {
-	octokit = new Octokit({
-		auth: await getApiKey('github'),
-	});
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
@@ -131,6 +128,9 @@ async function activate(context) {
 
 async function sendMessage(sessionId, message) {
 	const apiKey = await getApiKey('jules');
+	if (!apiKey) {
+		throw new Error('Jules API key not set. Please run the "Set Jules API Key" command.');
+	}
 	const response = await axios.post(`${JULES_API_BASE_URL}/v1alpha/${sessionId}:sendMessage`, {
 		message: {
 			text: message,
@@ -146,6 +146,9 @@ async function sendMessage(sessionId, message) {
 
 async function approvePlan(sessionId, planId) {
 	const apiKey = await getApiKey('jules');
+	if (!apiKey) {
+		throw new Error('Jules API key not set. Please run the "Set Jules API Key" command.');
+	}
 	const response = await axios.post(`${JULES_API_BASE_URL}/v1alpha/${sessionId}:approvePlan`, {
 		planId: planId,
 	}, {
@@ -195,6 +198,12 @@ async function getCurrentBranch() {
 }
 
 async function createPullRequest(branch, title, body) {
+	const token = await getApiKey('github');
+	if (!token) {
+		throw new Error('GitHub token not set. Please run the "Set GitHub Token" command.');
+	}
+	octokit = new Octokit({ auth: token });
+
 	const { owner, repo } = getGitConfig();
 	const head = `${owner}:${branch}`;
 	const base = await getCurrentBranch();
@@ -225,6 +234,12 @@ async function checkoutPullRequest(pullRequestNumber) {
 }
 
 async function mergePullRequest(pullRequestNumber) {
+	const token = await getApiKey('github');
+	if (!token) {
+		throw new Error('GitHub token not set. Please run the "Set GitHub Token" command.');
+	}
+	octokit = new Octokit({ auth: token });
+
 	const { owner, repo } = getGitConfig();
 	const response = await octokit.pulls.merge({
 		owner,
@@ -236,6 +251,9 @@ async function mergePullRequest(pullRequestNumber) {
 
 async function createSession() {
 	const apiKey = await getApiKey('jules');
+	if (!apiKey) {
+		throw new Error('Jules API key not set. Please run the "Set Jules API Key" command.');
+	}
 	const response = await axios.post(`${JULES_API_BASE_URL}/v1alpha/sessions`, {}, {
 		headers: {
 			'Content-Type': 'application/json',
