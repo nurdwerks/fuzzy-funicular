@@ -1,0 +1,52 @@
+{
+  "name": "jules",
+  "displayName": "Jules",
+  "description": "A VS Code plugin for the Jules API",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.105.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "jules.helloWorld",
+        "title": "Hello World"
+      },
+      {
+        "command": "jules.startChat",
+        "title": "Start Chat"
+      },
+      {
+        "command": "jules.setJulesApiKey",
+        "title": "Set Jules API Key"
+      },
+      {
+        "command": "jules.setGitHubToken",
+        "title": "Set GitHub Token"
+      }
+    ]
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "22.x",
+    "@types/vscode": "^1.105.0",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.36.0"
+  },
+  "dependencies": {
+    "@octokit/rest": "^22.0.1",
+    "axios": "^1.13.2",
+    "keytar": "^7.9.0"
+  }
+}
